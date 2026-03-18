@@ -8,7 +8,6 @@ from repository.item_repository import ItemRepository
 from repository.listing_repository import ListingRepository
 from repository.trade_repository import TradeRepository
 from data_structures.queue import Queue
-from data_structures.bst import BinarySearchTree
 from data_structures.hash_table import HashTable
 
 
@@ -21,18 +20,20 @@ class MarketService:
         self._trade_repo = trade_repo
         # pending buy orders queue
         self._order_queue: Queue = Queue()
-        # BST for price-sorted listing search
-        self._price_bst: BinarySearchTree = BinarySearchTree()
         # hash table for O(1) listing lookup
         self._listing_cache: HashTable = HashTable()
+        # price index: maps price -> list of listing_ids (supports multiple listings at same price)
+        self._price_index: dict[float, list[str]] = {}
         self._rebuild_indexes()
 
     def _rebuild_indexes(self):
-        self._price_bst = BinarySearchTree()
         self._listing_cache = HashTable()
+        self._price_index = {}
         for listing in self._listing_repo.find_active():
-            self._price_bst.insert(listing.price_per_unit, listing.listing_id)
             self._listing_cache.put(listing.listing_id, listing)
+            if listing.price_per_unit not in self._price_index:
+                self._price_index[listing.price_per_unit] = []
+            self._price_index[listing.price_per_unit].append(listing.listing_id)
 
     def list_item(self, seller: Player, item_id: str, quantity: int, price_per_unit: float) -> Optional[MarketListing]:
         if not seller.backpack.has_item(item_id, quantity):
@@ -45,7 +46,9 @@ class MarketService:
         listing_id = "lst_" + uuid.uuid4().hex[:8]
         listing = MarketListing(listing_id, seller.player_id, item_id, quantity, price_per_unit)
         self._listing_repo.save_listing(listing)
-        self._price_bst.insert(price_per_unit, listing_id)
+        if price_per_unit not in self._price_index:
+            self._price_index[price_per_unit] = []
+        self._price_index[price_per_unit].append(listing_id)
         self._listing_cache.put(listing_id, listing)
         return listing
 
@@ -58,7 +61,13 @@ class MarketService:
         self._player_repo.save_player(seller)
         self._listing_repo.save_listing(listing)
         self._listing_cache.delete(listing_id)
-        self._price_bst.delete(listing.price_per_unit)
+        # remove from price index
+        if listing.price_per_unit in self._price_index:
+            self._price_index[listing.price_per_unit] = [
+                lid for lid in self._price_index[listing.price_per_unit] if lid != listing_id
+            ]
+            if not self._price_index[listing.price_per_unit]:
+                del self._price_index[listing.price_per_unit]
         return True
 
     def buy_item(self, buyer: Player, listing_id: str) -> Optional[Trade]:
@@ -79,7 +88,13 @@ class MarketService:
         listing.status = "sold"
         self._listing_repo.save_listing(listing)
         self._listing_cache.delete(listing_id)
-        self._price_bst.delete(listing.price_per_unit)
+        # remove from price index
+        if listing.price_per_unit in self._price_index:
+            self._price_index[listing.price_per_unit] = [
+                lid for lid in self._price_index[listing.price_per_unit] if lid != listing_id
+            ]
+            if not self._price_index[listing.price_per_unit]:
+                del self._price_index[listing.price_per_unit]
         trade = Trade(
             trade_id="trd_" + uuid.uuid4().hex[:8],
             listing_id=listing_id,
@@ -121,8 +136,10 @@ class MarketService:
 
     def search_by_price_range(self, low: float, high: float) -> list[MarketListing]:
         results = []
-        for price, listing_id in self._price_bst.range_query(low, high):
-            listing = self._listing_cache.get(listing_id)
-            if listing:
-                results.append(listing)
+        for price in sorted(self._price_index.keys()):
+            if low <= price <= high:
+                for listing_id in self._price_index[price]:
+                    listing = self._listing_cache.get(listing_id)
+                    if listing:
+                        results.append(listing)
         return results

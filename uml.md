@@ -1,395 +1,370 @@
-# UML Class Diagram
+# 游戏交易系统 UML（团队阅读版）
+
+> 目标：给组员快速理解系统结构。  
+> 原则：**一张图只讲一个主题**，复杂模块单独拆开。
+
+---
+
+## 1. 阅读顺序
+
+建议按下面顺序看：
+
+1. **系统总览图**：先看系统分层和主依赖关系  
+2. **核心领域模型图**：理解核心业务对象  
+3. **背包模块图**：理解库存与背包  
+4. **市场模块图**：理解交易与检索  
+5. **关键流程时序图**：理解买卖过程
+
+---
+
+## 2. 系统总览图
+
+这张图只回答一个问题：**系统由哪些层组成，谁依赖谁。**
 
 ```mermaid
 classDiagram
-    %% Domain Layer
-    class Item {
-        <<abstract>>
-        -item_id: str
-        -name: str
-        -item_type: str
-        -rarity: str
-        -base_price: float
-        -description: str
-        +get_stats()* dict
-        +to_dict() dict
-    }
+    class CLI
 
-    class Weapon {
-        -attack: int
-        -durability: int
-        +get_stats() dict
-    }
+    class PlayerService
+    class InventoryService
+    class MarketService
+    class TradeService
+    class SystemService
 
-    class Armor {
-        -defense: int
-        -durability: int
-        +get_stats() dict
-    }
+    class PlayerRepository
+    class ItemRepository
+    class ListingRepository
+    class TradeRepository
 
-    class Potion {
-        -heal_amount: int
-        +get_stats() dict
-    }
-
-    class Material {
-        -stack_size: int
-        +get_stats() dict
-    }
-
-    class Player {
-        -player_id: str
-        -name: str
-        -gold: float
-        -level: int
-        -backpack: Backpack
-        +earn_gold(amount)
-        +spend_gold(amount) bool
-        +to_dict() dict
-        +from_dict(data)$ Player
-    }
-
-    class Backpack {
-        -capacity: int
-        -_items: DoublyLinkedList
-        +add_item(item_id, quantity) bool
-        +remove_item(item_id, quantity) bool
-        +has_item(item_id, quantity) bool
-        +get_quantity(item_id) int
-        +total_slots() int
-        +all_items() list
-        +to_dict() dict
-        +from_dict(data)$ Backpack
-    }
-
-    class MarketListing {
-        -listing_id: str
-        -seller_id: str
-        -item_id: str
-        -quantity: int
-        -price_per_unit: float
-        -created_at: str
-        -status: str
-        +total_price() float
-        +to_dict() dict
-        +from_dict(data)$ MarketListing
-    }
-
-    class Trade {
-        -trade_id: str
-        -listing_id: str
-        -buyer_id: str
-        -seller_id: str
-        -item_id: str
-        -quantity: int
-        -price_per_unit: float
-        -total_price: float
-        -traded_at: str
-        +to_dict() dict
-        +from_dict(data)$ Trade
-    }
-
-    %% Data Structures Layer
-    class DoublyLinkedList {
-        -head: Node
-        -tail: Node
-        -_size: int
-        +append(data) Node
-        +prepend(data) Node
-        +remove(node)
-        +find(predicate) Node
-        +size() int
-        +iter()
-    }
-
-    class Node {
-        -data: Any
-        -prev: Node
-        -next: Node
-    }
-
-    class Stack {
-        -_data: list
-        +push(item)
-        +pop() Any
-        +peek() Any
-        +is_empty() bool
-        +size() int
-    }
-
-    class Queue {
-        -_data: deque
-        +enqueue(item)
-        +dequeue() Any
-        +peek() Any
-        +is_empty() bool
-        +size() int
-    }
-
-    class Tree {
-        -root: TreeNode
-        +find(key) TreeNode
-        +insert(parent_key, child_key, value) bool
-        +traverse(node, depth)
-    }
-
-    class TreeNode {
-        -key: str
-        -value: Any
-        -children: list
-        +add_child(child)
-    }
-
-    class BinarySearchTree {
-        -root: BSTNode
-        +insert(key, value)
-        +search(key) Any
-        +delete(key)
-        +inorder()
-        +range_query(low, high)
-    }
-
-    class BSTNode {
-        -key: float
-        -value: Any
-        -left: BSTNode
-        -right: BSTNode
-    }
-
-    class HashTable {
-        -_capacity: int
-        -_buckets: list
-        -_size: int
-        +put(key, value)
-        +get(key) Any
-        +delete(key) bool
-        +contains(key) bool
-        +keys()
-        +values()
-        +items()
-        +size() int
-    }
-
-    %% Repository Layer
-    class PlayerRepository {
-        -_path: str
-        -_players: dict
-        +load()
-        +save()
-        +find_by_id(player_id) Player
-        +find_by_name(name) Player
-        +all() list
-        +save_player(player)
-        +delete(player_id) bool
-    }
-
-    class ItemRepository {
-        -_path: str
-        -_items: dict
-        +load()
-        +save()
-        +find_by_id(item_id) Item
-        +find_by_type(item_type) list
-        +all() list
-        +save_item(item)
-    }
-
-    class ListingRepository {
-        -_path: str
-        -_listings: dict
-        +load()
-        +save()
-        +find_by_id(listing_id) MarketListing
-        +find_active() list
-        +find_by_seller(seller_id) list
-        +find_by_item(item_id) list
-        +all() list
-        +save_listing(listing)
-        +delete(listing_id) bool
-    }
-
-    class TradeRepository {
-        -_path: str
-        -_trades: list
-        +load()
-        +save()
-        +add(trade)
-        +find_by_player(player_id) list
-        +find_by_buyer(buyer_id) list
-        +find_by_seller(seller_id) list
-        +all() list
-    }
-
-    class DataInitializer {
-        -_dir: str
-        +initialize()
-    }
-
-    %% Service Layer
-    class PlayerService {
-        -_repo: PlayerRepository
-        -_cache: HashTable
-        +get_player(player_id) Player
-        +get_by_name(name) Player
-        +list_players() list
-        +create_player(name, gold) Player
-        +save_player(player)
-        +delete_player(player_id) bool
-    }
-
-    class InventoryService {
-        -_player_repo: PlayerRepository
-        -_item_repo: ItemRepository
-        -_undo_stack: Stack
-        +get_inventory(player) list
-        +add_item(player, item_id, quantity) bool
-        +remove_item(player, item_id, quantity) bool
-        +undo_last(player) str
-        +sort_inventory_by_price(player) list
-        +search_item_in_inventory(player, name) list
-    }
-
-    class MarketService {
-        -_player_repo: PlayerRepository
-        -_item_repo: ItemRepository
-        -_listing_repo: ListingRepository
-        -_trade_repo: TradeRepository
-        -_order_queue: Queue
-        -_price_bst: BinarySearchTree
-        -_listing_cache: HashTable
-        +list_item(seller, item_id, quantity, price) MarketListing
-        +cancel_listing(seller, listing_id) bool
-        +buy_item(buyer, listing_id) Trade
-        +enqueue_buy_order(buyer_id, item_id, max_price)
-        +process_order_queue() list
-        +get_active_listings() list
-        +search_by_item(item_id) list
-        +search_by_price_range(low, high) list
-    }
-
-    class TradeService {
-        -_repo: TradeRepository
-        +get_all_trades() list
-        +get_trades_for_player(player_id) list
-        +get_purchases(player_id) list
-        +get_sales(player_id) list
-        +get_trade_volume(player_id) float
-    }
-
-    class SystemService {
-        -_player_repo: PlayerRepository
-        -_listing_repo: ListingRepository
-        -_trade_repo: TradeRepository
-        -_category_tree: Tree
-        +get_category_tree() Tree
-        +print_category_tree() str
-        +get_system_stats() dict
-        +initialize_data()
-    }
-
-    %% Presentation Layer
-    class CLI {
-        -_player_svc: PlayerService
-        -_inventory_svc: InventoryService
-        -_market_svc: MarketService
-        -_trade_svc: TradeService
-        -_system_svc: SystemService
-        -_item_repo: ItemRepository
-        -_current_player: Player
-        +run()
-        -_player_menu()
-        -_inventory_menu()
-        -_market_menu()
-        -_trade_history_menu()
-        -_system_menu()
-    }
-
-    %% Relationships - Domain
-    Item <|-- Weapon
-    Item <|-- Armor
-    Item <|-- Potion
-    Item <|-- Material
-    Player *-- Backpack
-    Backpack o-- DoublyLinkedList
-    DoublyLinkedList o-- Node
-
-    %% Relationships - Data Structures
-    Tree o-- TreeNode
-    BinarySearchTree o-- BSTNode
-
-    %% Relationships - Repository
-    PlayerRepository ..> Player
-    ItemRepository ..> Item
-    ListingRepository ..> MarketListing
-    TradeRepository ..> Trade
-
-    %% Relationships - Service
-    PlayerService --> PlayerRepository
-    PlayerService --> HashTable
-    InventoryService --> PlayerRepository
-    InventoryService --> ItemRepository
-    InventoryService --> Stack
-    MarketService --> PlayerRepository
-    MarketService --> ItemRepository
-    MarketService --> ListingRepository
-    MarketService --> TradeRepository
-    MarketService --> Queue
-    MarketService --> BinarySearchTree
-    MarketService --> HashTable
-    TradeService --> TradeRepository
-    SystemService --> PlayerRepository
-    SystemService --> ListingRepository
-    SystemService --> TradeRepository
-    SystemService --> Tree
-
-    %% Relationships - Presentation
     CLI --> PlayerService
     CLI --> InventoryService
     CLI --> MarketService
     CLI --> TradeService
     CLI --> SystemService
-    CLI --> ItemRepository
+
+    PlayerService --> PlayerRepository
+
+    InventoryService --> PlayerRepository
+    InventoryService --> ItemRepository
+
+    MarketService --> PlayerRepository
+    MarketService --> ItemRepository
+    MarketService --> ListingRepository
+    MarketService --> TradeRepository
+
+    TradeService --> TradeRepository
+
+    SystemService --> PlayerRepository
+    SystemService --> ListingRepository
+    SystemService --> TradeRepository
 ```
 
-## Architecture Overview
+### 说明
+- **CLI**：用户入口，负责菜单、输入输出
+- **Service**：业务逻辑层
+- **Repository**：数据持久化层
+- 这张图故意不展开属性和方法，避免信息过载
 
-### Layered Architecture
+---
 
-1. **Presentation Layer** (CLI)
-   - User interface and interaction
-   - Menu navigation
-   - Input/output handling
+## 3. 核心领域模型图
 
-2. **Service Layer** (Business Logic)
-   - PlayerService: Player management with hash table caching
-   - InventoryService: Inventory operations with undo stack
-   - MarketService: Market operations with queue, BST, and hash table
-   - TradeService: Trade history queries
-   - SystemService: System stats and category tree
+这张图只回答一个问题：**系统里有哪些核心业务对象，它们之间是什么关系。**
 
-3. **Domain Layer** (Core Models)
-   - Item hierarchy (abstract Item → Weapon, Armor, Potion, Material)
-   - Player with Backpack
-   - MarketListing
-   - Trade
+```mermaid
+classDiagram
+    class Item {
+        <<abstract>>
+        item_id
+        name
+        item_type
+        rarity
+        base_price
+    }
 
-4. **Data Structures Layer** (Custom Implementations)
-   - DoublyLinkedList: Backpack item storage
-   - Stack: Undo operations
-   - Queue: Buy order queue
-   - Tree: Item category hierarchy
-   - BinarySearchTree: Price-sorted market search
-   - HashTable: O(1) player/listing lookup
+    class Weapon {
+        attack
+        durability
+    }
 
-5. **Repository Layer** (Data Persistence)
-   - JSON file-based storage
-   - CRUD operations for all entities
-   - DataInitializer for seed data
+    class Armor {
+        defense
+        durability
+    }
 
-### Key Design Patterns
+    class Potion {
+        heal_amount
+    }
 
-- **Repository Pattern**: Abstracts data access
-- **Service Layer Pattern**: Encapsulates business logic
-- **Composition**: Player contains Backpack, Backpack uses DoublyLinkedList
-- **Abstract Factory**: Item hierarchy with polymorphic behavior
-- **Strategy Pattern**: Different data structures for different use cases
+    class Material {
+        stack_size
+    }
+
+    class Player {
+        player_id
+        name
+        gold
+        level
+    }
+
+    class Backpack {
+        capacity
+    }
+
+    class MarketListing {
+        listing_id
+        seller_id
+        item_id
+        quantity
+        price_per_unit
+        status
+    }
+
+    class Trade {
+        trade_id
+        listing_id
+        buyer_id
+        seller_id
+        item_id
+        quantity
+        price_per_unit
+        total_price
+        traded_at
+    }
+
+    Item <|-- Weapon
+    Item <|-- Armor
+    Item <|-- Potion
+    Item <|-- Material
+
+    Player *-- Backpack
+    MarketListing --> Item
+    Trade --> MarketListing
+```
+
+### 说明
+- **Item** 是抽象父类，不同物品类型继承它
+- **Player 组合 Backpack**：玩家拥有自己的背包
+- **MarketListing** 表示上架中的商品
+- **Trade** 表示实际成交记录
+
+---
+
+## 4. 背包模块图
+
+这张图只回答一个问题：**库存管理模块依赖什么，以及背包如何存储物品。**
+
+```mermaid
+classDiagram
+    class InventoryService {
+        get_inventory()
+        add_item()
+        remove_item()
+        undo_last()
+        sort_inventory_by_price()
+        search_item_in_inventory()
+    }
+
+    class PlayerRepository
+    class ItemRepository
+    class Stack
+
+    class Player
+    class Backpack {
+        capacity
+        add_item()
+        remove_item()
+        has_item()
+        get_quantity()
+    }
+
+    class DoublyLinkedList
+    class Node
+
+    InventoryService --> PlayerRepository
+    InventoryService --> ItemRepository
+    InventoryService --> Stack
+    InventoryService --> Player
+    Player *-- Backpack
+    Backpack o-- DoublyLinkedList
+    DoublyLinkedList o-- Node
+```
+
+### 说明
+- **InventoryService** 负责库存增删查改
+- **Stack** 用于撤销操作（undo），每个玩家独立维护一个栈
+- **Backpack** 内部使用 **DoublyLinkedList** 存储条目
+- **堆叠机制**：相同物品堆叠在同一槽位，不占用新槽位；只有新物品才需要新槽位
+- 数据结构细节被限制在这个局部图里，不放到总览图中
+
+---
+
+## 5. 市场模块图
+
+这张图只回答一个问题：**市场交易模块依赖哪些对象和数据结构。**
+
+```mermaid
+classDiagram
+    class MarketService {
+        list_item()
+        cancel_listing()
+        buy_item()
+        enqueue_buy_order()
+        process_order_queue()
+        search_by_item()
+        search_by_price_range()
+    }
+
+    class PlayerRepository
+    class ItemRepository
+    class ListingRepository
+    class TradeRepository
+
+    class MarketListing
+    class Trade
+
+    class Queue
+    class HashTable
+
+    MarketService --> PlayerRepository
+    MarketService --> ItemRepository
+    MarketService --> ListingRepository
+    MarketService --> TradeRepository
+
+    MarketService --> Queue
+    MarketService --> HashTable
+
+    ListingRepository ..> MarketListing
+    TradeRepository ..> Trade
+```
+
+### 说明
+- **ListingRepository**：管理上架单
+- **TradeRepository**：管理成交记录
+- **Queue**：处理买单队列（异步订单处理）
+- **HashTable**：listing_id 快速查找（O(1) 复杂度）
+- **价格索引**：使用 dict[price, list[listing_id]] 支持同价多商品和价格区间查询
+
+---
+
+## 6. 系统支撑模块图
+
+这张图只回答一个问题：**系统统计、分类树、初始化功能如何组织。**
+
+```mermaid
+classDiagram
+    class SystemService {
+        get_category_tree()
+        print_category_tree()
+        get_system_stats()
+        initialize_data()
+    }
+
+    class DataInitializer {
+        initialize()
+    }
+
+    class Tree
+    class TreeNode
+
+    class PlayerRepository
+    class ListingRepository
+    class TradeRepository
+
+    SystemService --> PlayerRepository
+    SystemService --> ListingRepository
+    SystemService --> TradeRepository
+    SystemService --> Tree
+    SystemService --> DataInitializer
+
+    Tree o-- TreeNode
+```
+
+### 说明
+- **SystemService**：偏系统管理和统计
+- **Tree / TreeNode**：维护物品分类树
+- **DataInitializer**：初始化种子数据
+
+---
+
+## 7. 关键流程时序图：购买商品
+
+这张图只回答一个问题：**买家购买一个商品时，系统怎么协作。**
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant CLI
+    participant MarketService
+    participant PlayerRepository
+    participant ListingRepository
+    participant TradeRepository
+    participant Backpack
+
+    User->>CLI: 选择购买商品
+    CLI->>MarketService: buy_item(buyer, listing_id)
+    MarketService->>ListingRepository: find_by_id(listing_id)
+    ListingRepository-->>MarketService: MarketListing
+    MarketService->>PlayerRepository: find buyer / seller
+    PlayerRepository-->>MarketService: Player objects
+    MarketService->>MarketService: 检查金币、验证非自买
+    MarketService->>PlayerRepository: buyer.spend_gold() / seller.earn_gold()
+    MarketService->>Backpack: buyer.backpack.add_item()
+    Backpack-->>MarketService: success
+    MarketService->>TradeRepository: add(trade)
+    TradeRepository-->>MarketService: saved
+    MarketService->>ListingRepository: update listing status
+    MarketService-->>CLI: Trade result
+    CLI-->>User: 显示购买结果
+```
+
+---
+
+## 8. 关键流程时序图：背包加物品
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant CLI
+    participant InventoryService
+    participant PlayerRepository
+    participant ItemRepository
+    participant Backpack
+
+    User->>CLI: 添加物品
+    CLI->>InventoryService: add_item(player, item_id, quantity)
+    InventoryService->>ItemRepository: find_by_id(item_id)
+    ItemRepository-->>InventoryService: Item
+    InventoryService->>PlayerRepository: find_by_id(player_id)
+    PlayerRepository-->>InventoryService: Player
+    InventoryService->>Backpack: add_item(item_id, quantity)
+    Backpack-->>InventoryService: success
+    InventoryService-->>CLI: result
+    CLI-->>User: 显示结果
+```
+
+---
+
+## 9. 画图取舍说明
+
+为保证清晰、易读，这份 UML 做了这些取舍：
+
+- 去掉了大量 `to_dict()`、`from_dict()`、`save()` 之类实现细节
+- 去掉了大部分简单 getter / utility 方法
+- 把复杂数据结构从总图中拆出去，只在局部图中展示
+- 保留了最关键的关系：继承、组合、依赖
+- 把“总览”和“局部细化”分开，便于组员快速理解
+
+---
+
+## 10. 建议使用方式
+
+组内分享时建议这样展示：
+
+- 第 1 页：系统总览图
+- 第 2 页：核心领域模型图
+- 第 3 页：市场模块图
+- 第 4 页：关键时序图
+
+这样比把所有类堆在一张图里更容易读，也更方便讨论。
+

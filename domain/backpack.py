@@ -8,14 +8,15 @@ class Backpack:
         self._items = DoublyLinkedList()  # stores (item_id, quantity) tuples
 
     def add_item(self, item_id: str, quantity: int = 1) -> bool:
-        if self.total_slots() >= self.capacity:
-            return False
-        # check if item already exists
+        # check if item already exists — stacking never needs a new slot
         node = self._items.find(lambda x: x[0] == item_id)
         if node:
             node.data = (item_id, node.data[1] + quantity)
-        else:
-            self._items.append((item_id, quantity))
+            return True
+        # new slot required — check capacity first
+        if self.total_slots() >= self.capacity:
+            return False
+        self._items.append((item_id, quantity))
         return True
 
     def remove_item(self, item_id: str, quantity: int = 1) -> bool:

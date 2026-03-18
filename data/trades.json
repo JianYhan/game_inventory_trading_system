@@ -1,1 +1,24 @@
-﻿[]
+[
+  {
+    "trade_id": "trd_21958e43",
+    "listing_id": "lst_0c242c45",
+    "buyer_id": "p001",
+    "seller_id": "p002",
+    "item_id": "pot_002",
+    "quantity": 1,
+    "price_per_unit": 90.0,
+    "total_price": 90.0,
+    "traded_at": "2026-03-18T14:31:42.582008"
+  },
+  {
+    "trade_id": "trd_36a10268",
+    "listing_id": "lst_a23e10df",
+    "buyer_id": "p001",
+    "seller_id": "p003",
+    "item_id": "mat_001",
+    "quantity": 10,
+    "price_per_unit": 6.0,
+    "total_price": 60.0,
+    "traded_at": "2026-03-18T14:31:42.592635"
+  }
+]

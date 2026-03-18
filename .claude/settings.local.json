@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(python main.py --help)",
-      "Bash(python main.py)"
+      "Bash(python main.py)",
+      "Bash(python -c \":*)",
+      "Bash(python tests/run_tests.py)"
     ]
   }
 }

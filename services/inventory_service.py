@@ -10,8 +10,8 @@ class InventoryService:
     def __init__(self, player_repo: PlayerRepository, item_repo: ItemRepository):
         self._player_repo = player_repo
         self._item_repo = item_repo
-        # undo stack: stores (player_id, action, item_id, quantity)
-        self._undo_stack: Stack = Stack()
+        # undo stack per player: dict[player_id, Stack]
+        self._undo_stacks: dict[str, Stack] = {}
 
     def get_inventory(self, player: Player) -> list[tuple]:
         """Returns list of (item, quantity)."""
@@ -28,25 +28,25 @@ class InventoryService:
             return False
         success = player.backpack.add_item(item_id, quantity)
         if success:
-            self._undo_stack.push((player.player_id, "remove", item_id, quantity))
+            if player.player_id not in self._undo_stacks:
+                self._undo_stacks[player.player_id] = Stack()
+            self._undo_stacks[player.player_id].push(("remove", item_id, quantity))
             self._player_repo.save_player(player)
         return success
 
     def remove_item(self, player: Player, item_id: str, quantity: int = 1) -> bool:
         success = player.backpack.remove_item(item_id, quantity)
         if success:
-            self._undo_stack.push((player.player_id, "add", item_id, quantity))
+            if player.player_id not in self._undo_stacks:
+                self._undo_stacks[player.player_id] = Stack()
+            self._undo_stacks[player.player_id].push(("add", item_id, quantity))
             self._player_repo.save_player(player)
         return success
 
     def undo_last(self, player: Player) -> Optional[str]:
-        if self._undo_stack.is_empty():
+        if player.player_id not in self._undo_stacks or self._undo_stacks[player.player_id].is_empty():
             return None
-        pid, action, item_id, qty = self._undo_stack.pop()
-        if pid != player.player_id:
-            # put it back, not for this player
-            self._undo_stack.push((pid, action, item_id, qty))
-            return None
+        action, item_id, qty = self._undo_stacks[player.player_id].pop()
         if action == "add":
             player.backpack.add_item(item_id, qty)
         else:

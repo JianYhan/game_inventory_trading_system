@@ -1,12 +1,98 @@
 [
-  {"item_id": "wpn_001", "name": "Iron Sword", "item_type": "weapon", "rarity": "common", "base_price": 50.0, "attack": 15, "durability": 100, "description": "A basic iron sword."},
-  {"item_id": "wpn_002", "name": "Flame Blade", "item_type": "weapon", "rarity": "rare", "base_price": 300.0, "attack": 45, "durability": 80, "description": "A blade engulfed in flames."},
-  {"item_id": "wpn_003", "name": "Shadow Dagger", "item_type": "weapon", "rarity": "uncommon", "base_price": 120.0, "attack": 25, "durability": 90, "description": "Swift and deadly."},
-  {"item_id": "arm_001", "name": "Leather Armor", "item_type": "armor", "rarity": "common", "base_price": 40.0, "defense": 10, "durability": 120, "description": "Basic leather protection."},
-  {"item_id": "arm_002", "name": "Dragon Scale", "item_type": "armor", "rarity": "epic", "base_price": 800.0, "defense": 80, "durability": 200, "description": "Forged from dragon scales."},
-  {"item_id": "arm_003", "name": "Iron Shield", "item_type": "armor", "rarity": "common", "base_price": 60.0, "defense": 20, "durability": 150, "description": "A sturdy iron shield."},
-  {"item_id": "pot_001", "name": "Health Potion", "item_type": "potion", "rarity": "common", "base_price": 20.0, "heal_amount": 50, "description": "Restores 50 HP."},
-  {"item_id": "pot_002", "name": "Mega Potion", "item_type": "potion", "rarity": "uncommon", "base_price": 80.0, "heal_amount": 200, "description": "Restores 200 HP."},
-  {"item_id": "mat_001", "name": "Iron Ore", "item_type": "material", "rarity": "common", "base_price": 5.0, "stack_size": 99, "description": "Raw iron ore for crafting."},
-  {"item_id": "mat_002", "name": "Dragon Bone", "item_type": "material", "rarity": "rare", "base_price": 150.0, "stack_size": 10, "description": "Rare bone from a dragon."}
+  {
+    "item_id": "wpn_001",
+    "name": "Iron Sword",
+    "item_type": "weapon",
+    "rarity": "common",
+    "base_price": 50.0,
+    "attack": 15,
+    "durability": 100,
+    "description": "A basic iron sword."
+  },
+  {
+    "item_id": "wpn_002",
+    "name": "Flame Blade",
+    "item_type": "weapon",
+    "rarity": "rare",
+    "base_price": 300.0,
+    "attack": 45,
+    "durability": 80,
+    "description": "A blade engulfed in flames."
+  },
+  {
+    "item_id": "wpn_003",
+    "name": "Shadow Dagger",
+    "item_type": "weapon",
+    "rarity": "uncommon",
+    "base_price": 120.0,
+    "attack": 25,
+    "durability": 90,
+    "description": "Swift and deadly."
+  },
+  {
+    "item_id": "arm_001",
+    "name": "Leather Armor",
+    "item_type": "armor",
+    "rarity": "common",
+    "base_price": 40.0,
+    "defense": 10,
+    "durability": 120,
+    "description": "Basic leather protection."
+  },
+  {
+    "item_id": "arm_002",
+    "name": "Dragon Scale",
+    "item_type": "armor",
+    "rarity": "epic",
+    "base_price": 800.0,
+    "defense": 80,
+    "durability": 200,
+    "description": "Forged from dragon scales."
+  },
+  {
+    "item_id": "arm_003",
+    "name": "Iron Shield",
+    "item_type": "armor",
+    "rarity": "common",
+    "base_price": 60.0,
+    "defense": 20,
+    "durability": 150,
+    "description": "A sturdy iron shield."
+  },
+  {
+    "item_id": "pot_001",
+    "name": "Health Potion",
+    "item_type": "potion",
+    "rarity": "common",
+    "base_price": 20.0,
+    "heal_amount": 50,
+    "description": "Restores 50 HP."
+  },
+  {
+    "item_id": "pot_002",
+    "name": "Mega Potion",
+    "item_type": "potion",
+    "rarity": "uncommon",
+    "base_price": 80.0,
+    "heal_amount": 200,
+    "description": "Restores 200 HP."
+  },
+  {
+    "item_id": "mat_001",
+    "name": "Iron Ore",
+    "item_type": "material",
+    "rarity": "common",
+    "base_price": 5.0,
+    "stack_size": 99,
+    "description": "Raw iron ore for crafting."
+  },
+  {
+    "item_id": "mat_002",
+    "name": "Dragon Bone",
+    "item_type": "material",
+    "rarity": "rare",
+    "base_price": 150.0,
+    "stack_size": 10,
+    "description": "Rare bone from a dragon."
+  }
 ]
