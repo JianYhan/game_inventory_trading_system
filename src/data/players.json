@@ -1,0 +1,38 @@
+{
+  "d7b23dac-5f57-4b55-9fa3-5272eb86b580": {
+    "player_id": "d7b23dac-5f57-4b55-9fa3-5272eb86b580",
+    "name": "qmw",
+    "gold": 1000.0,
+    "created_at": 1776758440.110077
+  },
+  "c89d8a90-8fcc-4ed8-a21f-5491c3388938": {
+    "player_id": "c89d8a90-8fcc-4ed8-a21f-5491c3388938",
+    "name": "Buyer",
+    "gold": 1000.0,
+    "created_at": 1776761517.3879738
+  },
+  "7146c148-cf1b-49eb-9b5a-1fe721794975": {
+    "player_id": "7146c148-cf1b-49eb-9b5a-1fe721794975",
+    "name": "TestPlayer",
+    "gold": 1000.0,
+    "created_at": 1776761524.5815191
+  },
+  "00bdce73-e434-4fa9-991c-38809a5bb3b4": {
+    "player_id": "00bdce73-e434-4fa9-991c-38809a5bb3b4",
+    "name": "UniqueName",
+    "gold": 1000.0,
+    "created_at": 1776761524.582743
+  },
+  "6ebb9239-3aaf-4c62-97b5-8e091f64bebd": {
+    "player_id": "6ebb9239-3aaf-4c62-97b5-8e091f64bebd",
+    "name": "CachedPlayer",
+    "gold": 1000.0,
+    "created_at": 1776761524.588151
+  },
+  "d107f6aa-89f5-4aad-adc0-6e16b2552441": {
+    "player_id": "d107f6aa-89f5-4aad-adc0-6e16b2552441",
+    "name": "dd",
+    "gold": 1000.0,
+    "created_at": 1776763493.237089
+  }
+}

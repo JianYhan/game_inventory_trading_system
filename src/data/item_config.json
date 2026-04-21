@@ -1,0 +1,114 @@
+{
+  "1001": {
+    "item_id": 1001,
+    "name": "Wooden Sword",
+    "item_type": "Weapon",
+    "rarity": "COMMON",
+    "base_price": 50
+  },
+  "1002": {
+    "item_id": 1002,
+    "name": "Iron Sword",
+    "item_type": "Weapon",
+    "rarity": "RARE",
+    "base_price": 120
+  },
+  "1003": {
+    "item_id": 1003,
+    "name": "Silver Blade",
+    "item_type": "Weapon",
+    "rarity": "EPIC",
+    "base_price": 300
+  },
+  "1004": {
+    "item_id": 1004,
+    "name": "Dragon Slayer",
+    "item_type": "Weapon",
+    "rarity": "LEGENDARY",
+    "base_price": 800
+  },
+  "2001": {
+    "item_id": 2001,
+    "name": "Small Red Potion",
+    "item_type": "Potion",
+    "rarity": "COMMON",
+    "base_price": 30
+  },
+  "2002": {
+    "item_id": 2002,
+    "name": "Medium Red Potion",
+    "item_type": "Potion",
+    "rarity": "RARE",
+    "base_price": 80
+  },
+  "2003": {
+    "item_id": 2003,
+    "name": "Large Red Potion",
+    "item_type": "Potion",
+    "rarity": "EPIC",
+    "base_price": 200
+  },
+  "2004": {
+    "item_id": 2004,
+    "name": "Elixir of Life",
+    "item_type": "Potion",
+    "rarity": "LEGENDARY",
+    "base_price": 600
+  },
+  "3001": {
+    "item_id": 3001,
+    "name": "Leather Armor",
+    "item_type": "Armor",
+    "rarity": "COMMON",
+    "base_price": 60
+  },
+  "3002": {
+    "item_id": 3002,
+    "name": "Iron Armor",
+    "item_type": "Armor",
+    "rarity": "RARE",
+    "base_price": 150
+  },
+  "3003": {
+    "item_id": 3003,
+    "name": "Mithril Plate",
+    "item_type": "Armor",
+    "rarity": "EPIC",
+    "base_price": 400
+  },
+  "3004": {
+    "item_id": 3004,
+    "name": "Dragon Scale Mail",
+    "item_type": "Armor",
+    "rarity": "LEGENDARY",
+    "base_price": 1000
+  },
+  "4001": {
+    "item_id": 4001,
+    "name": "Iron Ore",
+    "item_type": "Material",
+    "rarity": "COMMON",
+    "base_price": 20
+  },
+  "4002": {
+    "item_id": 4002,
+    "name": "Magic Crystal",
+    "item_type": "Material",
+    "rarity": "RARE",
+    "base_price": 70
+  },
+  "4003": {
+    "item_id": 4003,
+    "name": "Dragon Heart",
+    "item_type": "Material",
+    "rarity": "EPIC",
+    "base_price": 250
+  },
+  "4004": {
+    "item_id": 4004,
+    "name": "Phoenix Feather",
+    "item_type": "Material",
+    "rarity": "LEGENDARY",
+    "base_price": 700
+  }
+}

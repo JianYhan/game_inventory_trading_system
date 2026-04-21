@@ -1,0 +1,208 @@
+{
+  "d7b23dac-5f57-4b55-9fa3-5272eb86b580": {
+    "1001": {
+      "item_id": 1001,
+      "name": "Wooden Sword",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 50.0
+    },
+    "2002": {
+      "item_id": 2002,
+      "name": "Medium Red Potion",
+      "item_type": "Potion",
+      "rarity": "RARE",
+      "quantity": 1,
+      "sell_price": 160.0
+    },
+    "3001": {
+      "item_id": 3001,
+      "name": "Leather Armor",
+      "item_type": "Armor",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 60.0
+    }
+  },
+  "c89d8a90-8fcc-4ed8-a21f-5491c3388938": {
+    "1001": {
+      "item_id": 1001,
+      "name": "Wooden Sword",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 50.0
+    },
+    "2001": {
+      "item_id": 2001,
+      "name": "Small Red Potion",
+      "item_type": "Potion",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 30.0
+    },
+    "2002": {
+      "item_id": 2002,
+      "name": "Medium Red Potion",
+      "item_type": "Potion",
+      "rarity": "RARE",
+      "quantity": 1,
+      "sell_price": 160.0
+    },
+    "3001": {
+      "item_id": 3001,
+      "name": "Leather Armor",
+      "item_type": "Armor",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 60.0
+    }
+  },
+  "7146c148-cf1b-49eb-9b5a-1fe721794975": {
+    "1001": {
+      "item_id": 1001,
+      "name": "Wooden Sword",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 50.0
+    },
+    "2001": {
+      "item_id": 2001,
+      "name": "Small Red Potion",
+      "item_type": "Potion",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 30.0
+    },
+    "2002": {
+      "item_id": 2002,
+      "name": "Medium Red Potion",
+      "item_type": "Potion",
+      "rarity": "RARE",
+      "quantity": 1,
+      "sell_price": 160.0
+    },
+    "3001": {
+      "item_id": 3001,
+      "name": "Leather Armor",
+      "item_type": "Armor",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 60.0
+    }
+  },
+  "00bdce73-e434-4fa9-991c-38809a5bb3b4": {
+    "1001": {
+      "item_id": 1001,
+      "name": "Wooden Sword",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 50.0
+    },
+    "2001": {
+      "item_id": 2001,
+      "name": "Small Red Potion",
+      "item_type": "Potion",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 30.0
+    },
+    "2002": {
+      "item_id": 2002,
+      "name": "Medium Red Potion",
+      "item_type": "Potion",
+      "rarity": "RARE",
+      "quantity": 1,
+      "sell_price": 160.0
+    },
+    "3001": {
+      "item_id": 3001,
+      "name": "Leather Armor",
+      "item_type": "Armor",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 60.0
+    }
+  },
+  "6ebb9239-3aaf-4c62-97b5-8e091f64bebd": {
+    "1001": {
+      "item_id": 1001,
+      "name": "Wooden Sword",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 50.0
+    },
+    "2001": {
+      "item_id": 2001,
+      "name": "Small Red Potion",
+      "item_type": "Potion",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 30.0
+    },
+    "2002": {
+      "item_id": 2002,
+      "name": "Medium Red Potion",
+      "item_type": "Potion",
+      "rarity": "RARE",
+      "quantity": 1,
+      "sell_price": 160.0
+    },
+    "3001": {
+      "item_id": 3001,
+      "name": "Leather Armor",
+      "item_type": "Armor",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 60.0
+    }
+  },
+  "p1": {
+    "1": {
+      "item_id": 1,
+      "name": "木剑",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 5,
+      "sell_price": 110.0
+    }
+  },
+  "d107f6aa-89f5-4aad-adc0-6e16b2552441": {
+    "1001": {
+      "item_id": 1001,
+      "name": "Wooden Sword",
+      "item_type": "Weapon",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 50.0
+    },
+    "2001": {
+      "item_id": 2001,
+      "name": "Small Red Potion",
+      "item_type": "Potion",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 30.0
+    },
+    "2002": {
+      "item_id": 2002,
+      "name": "Medium Red Potion",
+      "item_type": "Potion",
+      "rarity": "RARE",
+      "quantity": 1,
+      "sell_price": 160.0
+    },
+    "3001": {
+      "item_id": 3001,
+      "name": "Leather Armor",
+      "item_type": "Armor",
+      "rarity": "COMMON",
+      "quantity": 1,
+      "sell_price": 60.0
+    }
+  }
+}
