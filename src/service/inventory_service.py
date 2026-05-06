@@ -25,6 +25,15 @@ class InventoryService:
         """统一的物品查找方法"""
         return next((i for i in items if i.item_id == item_id), None)
 
+    def _load_backpack_structures(self, player_id: str) -> None:
+        """Load backpack data into the linked list and hash index."""
+        self._backpack_list = DoublyLinkedList()
+        self._backpack_index = HashTable()
+
+        for item in self._item_repo.find_by_player(player_id):
+            self._backpack_list.append(item)
+            self._backpack_index.put(item.item_id, item)
+
     def _validate_quantity(self, quantity: int, max_qty: int) -> None:
         """统一的数量验证"""
         if quantity <= 0:
@@ -37,15 +46,15 @@ class InventoryService:
     @handle_exceptions
     def get_backpack(self, player_id: str) -> Response:
         """获取背包物品列表"""
-        items = self._item_repo.find_by_player(player_id)
-        return Response.ok(data=items)
+        self._load_backpack_structures(player_id)
+        return Response.ok(data=self._backpack_list.to_list())
 
     @handle_exceptions
     def get_backpack_grouped(self, player_id: str) -> Response:
         """按类型分组的背包"""
-        items = self._item_repo.find_by_player(player_id)
+        self._load_backpack_structures(player_id)
         groups: dict[str, list] = {}
-        for item in items:
+        for item in self._backpack_list:
             key = item.item_type.value
             groups.setdefault(key, []).append(item)
         return Response.ok(data=groups)
@@ -56,8 +65,8 @@ class InventoryService:
         logger.info(f"Player {player_id} selling {quantity}x item {item_id} at {price}")
 
         # 查找物品
-        items = self._item_repo.find_by_player(player_id)
-        target = self._find_item(items, item_id)
+        self._load_backpack_structures(player_id)
+        target = self._backpack_index.get(item_id)
         if target is None:
             raise ItemNotFoundException(ErrorMessages.ITEM_NOT_FOUND)
 
@@ -86,8 +95,11 @@ class InventoryService:
         target.quantity -= quantity
         if target.quantity == 0:
             self._item_repo.remove_item(player_id, item_id)
+            self._backpack_list.remove(target)
+            self._backpack_index.remove(item_id)
         else:
             self._item_repo.save_item(player_id, target)
+            self._backpack_index.put(item_id, target)
 
         # 记录操作
         action_msg = SuccessMessages.ITEM_SOLD.format(
@@ -103,15 +115,18 @@ class InventoryService:
         """添加物品到背包（自动合并同类物品）"""
         logger.debug(f"Adding item {item.item_id} x{item.quantity} to player {player_id}")
 
-        items = self._item_repo.find_by_player(player_id)
-        existing = self._find_item(items, item.item_id)
+        self._load_backpack_structures(player_id)
+        existing = self._backpack_index.get(item.item_id)
 
         if existing:
             existing.quantity += item.quantity
             self._item_repo.save_item(player_id, existing)
+            self._backpack_index.put(existing.item_id, existing)
             logger.debug(f"Merged item {item.item_id}, new quantity: {existing.quantity}")
         else:
             self._item_repo.save_item(player_id, item)
+            self._backpack_list.append(item)
+            self._backpack_index.put(item.item_id, item)
             logger.debug(f"Added new item {item.item_id}")
 
         return Response.ok(SuccessMessages.ITEM_ADDED)
@@ -121,8 +136,8 @@ class InventoryService:
         """从背包扣除物品"""
         logger.info(f"Deducting {quantity}x item {item_id} from player {player_id}")
 
-        items = self._item_repo.find_by_player(player_id)
-        target = self._find_item(items, item_id)
+        self._load_backpack_structures(player_id)
+        target = self._backpack_index.get(item_id)
 
         if target is None:
             raise ItemNotFoundException(ErrorMessages.ITEM_NOT_FOUND_GENERIC)
@@ -135,8 +150,11 @@ class InventoryService:
         target.quantity -= quantity
         if target.quantity == 0:
             self._item_repo.remove_item(player_id, item_id)
+            self._backpack_list.remove(target)
+            self._backpack_index.remove(item_id)
         else:
             self._item_repo.save_item(player_id, target)
+            self._backpack_index.put(item_id, target)
 
         logger.info(f"Deducted {quantity}x item {item_id} from player {player_id}")
         return Response.ok(SuccessMessages.ITEM_DEDUCTED)

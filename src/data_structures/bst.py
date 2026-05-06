@@ -80,6 +80,40 @@ class BinarySearchTree:
         self._range(self._root, low, high, result)
         return result
 
+    def delete(self, key):
+        old_size = len(self.inorder())
+        self._root = self._delete(self._root, key)
+        return len(self.inorder()) < old_size
+
+    def _delete(self, node, key):
+        if node is None:
+            return None
+
+        if key < node.key:
+            node.left = self._delete(node.left, key)
+            return node
+
+        if key > node.key:
+            node.right = self._delete(node.right, key)
+            return node
+
+        if node.left is None:
+            return node.right
+        if node.right is None:
+            return node.left
+
+        successor = self._min_node(node.right)
+        node.key = successor.key
+        node.data = successor.data
+        node.right = self._delete(node.right, successor.key)
+        return node
+
+    def _min_node(self, node):
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+
     def _range(self, node, low, high, result):
         if node is None:
             return
