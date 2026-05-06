@@ -1,53 +1,89 @@
+class HashPair:
+    """保存"""
+
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+
 class HashTable:
     def __init__(self, capacity=64):
         self._capacity = capacity
-        self._buckets = [[] for _ in range(capacity)]
+        self._buckets = []
         self._size = 0
+
+        for i in range(capacity):
+            self._buckets.append([])
 
     def _hash(self, key):
         return hash(key) % self._capacity
 
     def put(self, key, value):
-        idx = self._hash(key)
-        for pair in self._buckets[idx]:
-            if pair[0] == key:
-                pair[1] = value
+        index = self._hash(key)
+        bucket = self._buckets[index]
+
+        for pair in bucket:
+            if pair.key == key:
+                pair.value = value
                 return
-        self._buckets[idx].append([key, value])
+
+        bucket.append(HashPair(key, value))
         self._size += 1
 
     def get(self, key, default=None):
-        idx = self._hash(key)
-        for pair in self._buckets[idx]:
-            if pair[0] == key:
-                return pair[1]
+        index = self._hash(key)
+        bucket = self._buckets[index]
+
+        for pair in bucket:
+            if pair.key == key:
+                return pair.value
+
         return default
 
     def remove(self, key):
-        idx = self._hash(key)
-        for i, pair in enumerate(self._buckets[idx]):
-            if pair[0] == key:
-                self._buckets[idx].pop(i)
+        index = self._hash(key)
+        bucket = self._buckets[index]
+
+        i = 0
+        while i < len(bucket):
+            if bucket[i].key == key:
+                bucket.pop(i)
                 self._size -= 1
                 return True
+            i += 1
+
         return False
 
     def contains(self, key):
-        return self.get(key) is not None
+        index = self._hash(key)
+        bucket = self._buckets[index]
+
+        for pair in bucket:
+            if pair.key == key:
+                return True
+
+        return False
+
+    def size(self):
+        return self._size
 
     def __len__(self):
         return self._size
 
     def keys(self):
         result = []
+
         for bucket in self._buckets:
             for pair in bucket:
-                result.append(pair[0])
+                result.append(pair.key)
+
         return result
 
     def values(self):
         result = []
+
         for bucket in self._buckets:
             for pair in bucket:
-                result.append(pair[1])
+                result.append(pair.value)
+
         return result
