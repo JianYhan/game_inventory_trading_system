@@ -12,7 +12,7 @@ from ..domain import (
     PlayerNotFoundException, ValidationException,
     InsufficientGoldException
 )
-from ..data_structures import Queue
+from ..data_structures import BinarySearchTree, HashTable, Queue
 from ..repository import ListingRepository, TradeRepository, PlayerRepository, ItemRepository, ITEM_CONFIG
 from .inventory_service import InventoryService
 
@@ -27,7 +27,32 @@ class MarketService:
         self._item_repo = ItemRepository()
         self._inventory = inventory_service
         self._restock_queue: Queue = Queue()
+        self._listing_index: HashTable = HashTable()
+        self._price_bst: BinarySearchTree = BinarySearchTree()
         logger.info("MarketService initialized")
+
+    def _price_key(self, order: MarketOrder):
+        return (order.unit_price, order.list_time, order.order_id)
+
+    def _rebuild_market_structures(self) -> None:
+        """Load active listings into hash and BST indexes."""
+        self._listing_index = HashTable()
+        self._price_bst = BinarySearchTree()
+
+        for order in self._listing_repo.find_all_active():
+            self._listing_index.put(order.order_id, order)
+            self._price_bst.insert(self._price_key(order), order)
+
+    def _get_order_fast(self, order_id: str) -> Optional[MarketOrder]:
+        self._rebuild_market_structures()
+        order = self._listing_index.get(order_id)
+        if order is not None:
+            return order
+        return self._listing_repo.find_by_id(order_id)
+
+    def _get_sorted_active_listings(self) -> list[MarketOrder]:
+        self._rebuild_market_structures()
+        return [order for _, order in self._price_bst.inorder_items()]
 
     def _find_item_in_backpack(self, player_id: str, item_id: int) -> Optional[BackpackItem]:
         """在玩家背包中查找物品"""
@@ -94,6 +119,8 @@ class MarketService:
             list_time=time.time()
         )
         self._listing_repo.save(order)
+        self._listing_index.put(order.order_id, order)
+        self._price_bst.insert(self._price_key(order), order)
 
         logger.info(f"Player {player_id} listed order {order.order_id}")
         return Response.ok(
@@ -105,8 +132,7 @@ class MarketService:
     @handle_exceptions
     def get_listings(self) -> Response:
         """获取所有在售挂单"""
-        listings = self._listing_repo.find_all_active()
-        listings.sort(key=lambda o: o.list_time, reverse=True)
+        listings = self._get_sorted_active_listings()
         return Response.ok(data=listings)
 
     @handle_exceptions
@@ -114,7 +140,7 @@ class MarketService:
         """购买市场物品"""
         logger.info(f"Player {buyer_id} buying {quantity} from order {order_id}")
 
-        order = self._listing_repo.find_by_id(order_id)
+        order = self._get_order_fast(order_id)
         if order is None:
             raise ItemNotFoundException(ErrorMessages.ORDER_NOT_FOUND)
 
@@ -163,6 +189,7 @@ class MarketService:
         else:
             order.status = OrderStatus.PARTIAL
         self._listing_repo.save(order)
+        self._rebuild_market_structures()
 
         # 创建交易记录
         record_id = str(uuid.uuid4())
@@ -202,7 +229,7 @@ class MarketService:
         """下架自己的挂单"""
         logger.info(f"Player {player_id} delisting order {order_id}")
 
-        order = self._listing_repo.find_by_id(order_id)
+        order = self._get_order_fast(order_id)
         if order is None:
             raise ItemNotFoundException(ErrorMessages.ORDER_NOT_FOUND)
 
@@ -221,6 +248,7 @@ class MarketService:
 
         order.status = OrderStatus.DELISTED
         self._listing_repo.save(order)
+        self._rebuild_market_structures()
 
         logger.info(f"Player {player_id} delisted order {order_id}")
         return Response.ok(SuccessMessages.ITEM_DELISTED)
@@ -235,7 +263,7 @@ class MarketService:
         if len(keyword) > 50:
             raise ValidationException("Search keyword too long (max 50 characters).")
 
-        listings = self._listing_repo.find_all_active()
+        listings = self._get_sorted_active_listings()
         results = [o for o in listings if keyword.lower() in o.item_name.lower()]
 
         if not results:
@@ -279,4 +307,6 @@ class MarketService:
                 list_time=time.time()
             )
             self._listing_repo.save(order)
+            self._listing_index.put(order.order_id, order)
+            self._price_bst.insert(self._price_key(order), order)
             logger.info(f"System restocked: {cfg['name']} x{qty}")

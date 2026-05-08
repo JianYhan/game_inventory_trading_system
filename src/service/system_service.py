@@ -2,7 +2,8 @@ import json
 import os
 import time
 from ..domain import GameSave, Response
-from ..repository import PlayerRepository, ItemRepository, ListingRepository, TradeRepository
+from ..data_structures import Tree
+from ..repository import PlayerRepository, ItemRepository, ListingRepository, TradeRepository, ConfigRepository
 
 
 SAVE_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "save.json")
@@ -14,6 +15,33 @@ class SystemService:
         self._item_repo = ItemRepository()
         self._listing_repo = ListingRepository()
         self._trade_repo = TradeRepository()
+        self._config_repo = ConfigRepository()
+        self._category_tree = self._build_category_tree()
+
+    def _build_category_tree(self) -> Tree:
+        """Build an item catalog tree grouped by item type and rarity."""
+        tree = Tree("Item Catalog")
+
+        for item in self._config_repo.find_all():
+            type_name = item.item_type.value.lower()
+            rarity_name = item.rarity.label
+            item_label = f"{item.name} ({item.item_id})"
+
+            if tree.find(type_name) is None:
+                tree.insert("Item Catalog", type_name)
+            rarity_key = f"{type_name} / {rarity_name}"
+            if tree.find(rarity_key) is None:
+                tree.insert(type_name, rarity_key)
+            tree.insert(rarity_key, item_label, item)
+
+        return tree
+
+    def get_category_tree(self) -> Tree:
+        self._category_tree = self._build_category_tree()
+        return self._category_tree
+
+    def print_category_tree(self) -> str:
+        return "\n".join(self.get_category_tree().to_lines())
 
     def has_save(self) -> bool:
         return os.path.exists(SAVE_FILE)

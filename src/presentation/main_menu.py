@@ -13,9 +13,10 @@ def show_main_menu(player, inventory_service, market_service, trade_service, sys
         print("  [1] Backpack")
         print("  [2] Market")
         print("  [3] My Profile")
+        print("  [4] Item Catalog")
         print("  [0] Save & Exit")
 
-        choice = prompt_choice("\nSelect: ", {0, 1, 2, 3})
+        choice = prompt_choice("\nSelect: ", {0, 1, 2, 3, 4})
         if choice is None:
             continue
         if choice == 0:
@@ -28,6 +29,10 @@ def show_main_menu(player, inventory_service, market_service, trade_service, sys
             show_market_menu(player, inventory_service, market_service)
         elif choice == 3:
             show_profile_menu(player, trade_service, market_service)
+        elif choice == 4:
+            clear_screen()
+            print(system_service.print_category_tree())
+            input("\nPress Enter...")
 
 
 def show_entry_menu(player_service, system_service):
