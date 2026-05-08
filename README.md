@@ -1,147 +1,211 @@
-# Game Inventory System 游戏背包系统
+# Game Inventory & Trading System
 
-一个基于命令行的游戏背包管理系统，使用纯 Python 实现，包含自定义数据结构。
+A command-line game inventory and marketplace system implemented in Python. The project models players, backpacks, item catalogs, market listings, and trade history with a layered architecture and several custom data structures.
 
-## 功能简介
+## Features
 
-- 玩家注册与登录
-- 背包物品管理（增删查）
-- 市场交易系统
-- 玩家间交易
+- Create a new player and continue from an existing save file.
+- Manage a backpack grouped by item type.
+- Sell items directly for gold within a validated price range.
+- List backpack items on the market for other players to buy.
+- Browse active market listings sorted by price.
+- Search market listings by item name.
+- Delist your own active market orders and return remaining items to your backpack.
+- View player profile data, own listings, buy records, and sell records.
+- Display an item catalog tree grouped by item type and rarity.
+- Persist players, items, listings, trade records, item configuration, and saves as JSON files.
 
-## 项目特色
+## Project Highlights
 
-### 纯指针数据结构
-不使用 Python 内置 `list/dict/set`，所有数据结构（Stack、Queue、LinkedList、HashTable、BST）均为纯指针实现。
+### Custom Data Structures
 
-### 分层架构
-```
-presentation/  →  service/  →  repository/  →  domain/
-    界面层         业务层         持久化层        模型层
-```
+The project includes custom implementations under `src/data_structures/`:
 
-### 统一异常处理
-- `@handle_exceptions` 装饰器统一捕获所有 Service 层异常
-- 日志记录所有操作和错误
+- `Stack` for recent inventory actions.
+- `Queue` for market restock and trade-record processing.
+- `DoublyLinkedList` for backpack and trade-record traversal.
+- `HashTable` for player, item, and listing lookup indexes.
+- `BinarySearchTree` for price-ordered market listings.
+- `Tree` for the item catalog hierarchy.
 
-## 项目结构
+These structures are used by the service layer to support the main gameplay workflows. JSON repositories and some presentation-layer grouping still use standard Python containers where they are a practical fit for persistence and CLI rendering.
 
-```
-game_inventory/
-├── main.py              # 程序入口
-├── src/
-│   ├── data_structures/ # 纯指针数据结构
-│   │   ├── stack.py     # 单向链表栈
-│   │   ├── queue.py     # 单向链表队列
-│   │   ├── linked_list.py  # 双向链表
-│   │   ├── hash_table.py   # 哈希表
-│   │   └── bst.py       # 二叉搜索树
-│   ├── domain/          # 领域层
-│   │   ├── constants.py # 游戏配置常量
-│   │   ├── messages.py  # 统一消息
-│   │   ├── exceptions.py # 异常处理
-│   │   ├── enums.py     # 枚举定义
-│   │   └── models.py    # 数据模型
-│   ├── repository/      # 数据持久化
-│   ├── service/         # 业务逻辑
-│   └── presentation/    # 交互界面
-├── tests/              # 测试目录
-├── docs/               # 详细文档
-└── pyproject.toml      # 项目配置
+### Layered Architecture
+
+```text
+presentation/  ->  service/  ->  repository/  ->  domain/
+CLI menus          business       JSON storage      models,
+                   rules                            enums,
+                                                    constants
 ```
 
-## 运行方式
+### Consistent Service Responses
+
+Service methods return a shared `Response` model with success/failure status, messages, optional data, and optional player state. Many service operations use the `@handle_exceptions` decorator to convert domain exceptions into failure responses.
+
+### Centralized Game Configuration
+
+Core rules such as initial gold, name length, price validation, rarity multipliers, and market restock ranges are defined in `src/domain/constants.py`.
+
+## Project Structure
+
+```text
+game_inventory_trading_system/
+|-- main.py
+|-- pyproject.toml
+|-- requirements.txt
+|-- README.md
+|-- ARCHITECTURE.md
+|-- uml.md
+|-- docs/
+|   |-- *.docx
+|-- src/
+|   |-- data/
+|   |   |-- buy_records.json
+|   |   |-- item_config.json
+|   |   |-- items.json
+|   |   |-- listings.json
+|   |   |-- players.json
+|   |   |-- save.json
+|   |   |-- sell_records.json
+|   |-- data_structures/
+|   |   |-- bst.py
+|   |   |-- hash_table.py
+|   |   |-- linked_list.py
+|   |   |-- queue.py
+|   |   |-- stack.py
+|   |   |-- tree.py
+|   |-- domain/
+|   |   |-- constants.py
+|   |   |-- enums.py
+|   |   |-- exceptions.py
+|   |   |-- messages.py
+|   |   |-- models.py
+|   |-- presentation/
+|   |   |-- inventory_menu.py
+|   |   |-- main_menu.py
+|   |   |-- market_menu.py
+|   |   |-- profile_menu.py
+|   |   |-- utils.py
+|   |-- repository/
+|   |   |-- data_initializer.py
+|   |   |-- repositories.py
+|   |-- service/
+|       |-- inventory_service.py
+|       |-- market_service.py
+|       |-- player_service.py
+|       |-- system_service.py
+|       |-- trade_service.py
+|-- tests/
+|   |-- integration/
+|   |-- unit/
+|       |-- data_structures/
+|       |-- domain/
+|       |-- repository/
+|       |-- service/
+```
+
+## Requirements
+
+- Python 3.10 or later.
+- No runtime third-party dependencies.
+- Development/test dependencies are optional: `pytest`, `pytest-xdist`, and `pytest-cov`.
+
+## Run the Application
 
 ```bash
-# 确保已安装 Python 3.x
 python main.py
 ```
 
-## 依赖
+On startup, the application initializes required JSON files under `src/data/` if they do not already exist.
 
-本项目无第三方库依赖，仅使用 Python 标准库。
+## Gameplay Overview
 
-## 测试
+1. Start a new game or continue from `src/data/save.json`.
+2. Create a character with initial gold and starter items.
+3. Use the backpack menu to view grouped items or sell items directly.
+4. Use the market menu to browse, search, buy, list, or delist items.
+5. Use the profile menu to review player information, listings, and trade history.
+6. Save and exit from the main menu.
 
-使用 pytest 进行 TDD 测试，分层测试架构：
+## Testing
+
+Install test dependencies:
 
 ```bash
-# 安装测试依赖
-pip install pytest pytest-xdist
-
-# 运行所有测试
-pytest
-
-# 只运行数据结构测试（核心）
-pytest tests/unit/data_structures/
-
-# 运行特定测试文件
-pytest tests/unit/data_structures/test_stack.py -v
-
-# 并行运行测试（加速）
-pytest -n auto
+pip install pytest pytest-xdist pytest-cov
 ```
 
-### 测试覆盖
+Run all tests:
 
-- **单元测试**: `tests/unit/`
-  - `data_structures/` - 纯指针实现的数据结构（98 tests ✓）
-  - `domain/` - 数据模型与枚举
-  - `repository/` - 数据持久化层
-  - `service/` - 业务逻辑层
-
-- **集成测试**: `tests/integration/`
-  - 完整交易流程测试
-
-### TDD 原则
-
-1. 先写测试，再写实现
-2. 测试即文档
-3. 使用 fixtures 共享测试数据
-4. 分层测试，快速定位问题
-
-## 代码质量改进
-
-### 统一配置管理
-所有魔法数字集中在 `constants.py`：
-
-```python
-from src.domain import PlayerConfig, PriceConfig, MarketConfig
-
-# 初始金币
-PlayerConfig.INITIAL_GOLD  # 1000.0
-
-# 价格范围
-PriceConfig.MIN_PRICE_FACTOR  # 0.8
-PriceConfig.MAX_PRICE_FACTOR  # 1.2
+```bash
+python -m pytest
 ```
 
-### 统一异常处理
-使用 `@handle_exceptions` 装饰器：
+Run only data-structure tests:
+
+```bash
+python -m pytest tests/unit/data_structures/
+```
+
+Run a specific test file:
+
+```bash
+python -m pytest tests/unit/data_structures/test_stack.py -v
+```
+
+Run tests in parallel:
+
+```bash
+python -m pytest -n auto
+```
+
+## Test Layout
+
+- `tests/unit/data_structures/` covers custom stack, queue, linked list, hash table, binary search tree, and general tree behavior.
+- `tests/unit/domain/` covers enums and domain models.
+- `tests/unit/repository/` covers JSON repository behavior.
+- `tests/unit/service/` covers player, inventory, market, trade, and item catalog service logic.
+- `tests/integration/` covers complete trading flows.
+
+## Data Files
+
+The game stores local state in `src/data/`:
+
+- `item_config.json`: item definitions and base prices.
+- `players.json`: player profiles and gold balances.
+- `items.json`: player backpack contents.
+- `listings.json`: market orders.
+- `buy_records.json`: purchase history.
+- `sell_records.json`: sale history.
+- `save.json`: the currently saved player session.
+
+## Example Service Patterns
+
+Centralized constants:
 
 ```python
-from src.domain import handle_exceptions
+from src.domain import PlayerConfig, PriceConfig
+
+PlayerConfig.INITIAL_GOLD
+PriceConfig.calculate_range(base_price)
+```
+
+Unified response handling:
+
+```python
+from src.domain import Response, handle_exceptions
 
 @handle_exceptions
 def create_player(self, name: str) -> Response:
-    # 异常自动捕获并返回 Response.fail()
     ...
 ```
 
-### 统一日志记录
-所有 Service 层操作都有日志记录：
-
-```python
-logger.info(f"Player {player_id} sold {quantity}x {item_name}")
-logger.error(f"Operation failed: {str(e)}", exc_info=True)
-```
-
-### 统一消息管理
-用户Facing的消息集中在 `messages.py`：
+Centralized messages:
 
 ```python
 from src.domain import ErrorMessages, SuccessMessages
 
-ErrorMessages.ITEM_NOT_FOUND  # "Item not found in backpack."
-SuccessMessages.ITEM_SOLD     # "Sold {quantity}x {item} for {gold:.0f} gold."
+ErrorMessages.ITEM_NOT_FOUND
+SuccessMessages.ITEM_SOLD
 ```
